@@ -262,8 +262,8 @@ class index:
 
         if web.ctx.env.get('HTTP_AUTHORIZATION') is not None:
             return """<html><head></head><body>
-This form takes an image upload and caption description and returns cosine-similarity.<br/><br/>
-<form method="POST" enctype="multipart/form-data" action="">
+This form takes an image upload and returns a Pythia caption.<br/><br/>
+<form method="POST" action="">
 URL: <input type="input" name="image_url" /><br/><br/>
 <input type="submit" />
 </form>
@@ -273,21 +273,17 @@ URL: <input type="input" name="image_url" /><br/><br/>
 
     def POST(self, *args):
         x = web.input()
-        web.debug(x['image_url'])        # This is the caption contents
-
         demo = PythiaDemo()
-        image_path = demo.get_actual_image(image_url.value)
-        image = Image.open(image_path)
+        image_path = demo.get_actual_image(str(x['image_url']))
 
-        tokens = demo.predict(x['image_url'].value)
+        tokens = demo.predict(str(x['image_url']))
         answer = demo.caption_processor(tokens.tolist()[0])["caption"]
     
-        data_uri = base64.b64encode(image)
-        img_tag = '<img src="data:image/jpeg;base64,{0}">'.format(data_uri)
+        img_tag = '<img src="' + str(x['image_url']) + '">'
 
         page = """<html><head></head><body>
 This form takes an image upload and caption description and returns cosine-similarity.<br/><br/>
-<form method="POST" enctype="multipart/form-data" action="">
+<form method="POST" action="">
 URL: <input type="input" name="image_url" /><br/><br/>
 <input type="submit" />
 </form>""" + img_tag + """<br/>Caption: """ + answer + """<br/>
@@ -317,14 +313,10 @@ class api:
     
         demo = PythiaDemo()        
         image_path = demo.get_actual_image(str(x['image_url']))
-        image = Image.open(image_path)
 
         tokens = demo.predict(str(x['image_url']))
         answer = demo.caption_processor(tokens.tolist()[0])["caption"]
     
-        # data_uri = base64.b64encode(image)
-        # img_tag = '<img src="data:image/jpeg;base64,{0}">'.format(data_uri)
-
         return answer
 
 
