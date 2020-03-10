@@ -329,7 +329,7 @@ class login:
             authreq = True
         else:
             auth = re.sub('^Basic ','',auth)
-            username,password = base64.decodestring(auth).split(':')
+            username,password = base64.b64decode(auth).decode().split(':')
             if (username,password) in config.allowed:
                 raise web.seeother('/')
             else:
