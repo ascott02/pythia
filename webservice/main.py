@@ -282,7 +282,7 @@ URL: <input type="input" name="image_url" /><br/><br/>
         img_tag = '<img src="' + str(x['image_url']) + '">'
 
         page = """<html><head></head><body>
-This form takes an image upload and caption description and returns cosine-similarity.<br/><br/>
+This form takes an image upload and returns a Pythia caption.<br/><br/>
 <form method="POST" action="">
 URL: <input type="input" name="image_url" /><br/><br/>
 <input type="submit" />
