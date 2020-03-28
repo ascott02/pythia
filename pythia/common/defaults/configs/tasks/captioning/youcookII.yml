@@ -1,27 +1,29 @@
+includes:
+- ../configs/captioning/youcookII/butd.yml
 task_attributes:
     captioning:
         datasets:
-        - coco
+        - youcookII
         dataset_size_proportional_sampling: true
         dataset_attributes:
-            coco:
-                data_root_dir: ../data
+            youcookII:
+                data_root_dir: /home/ascott/data/pythia/youcookII_features
                 image_depth_first: false
                 fast_read: false
                 image_features:
                     train:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    - training_features_vmb,training_features_resnet
                     val:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    - validation_features_vmb,validation_features_resnet
                     test:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    - test_features_vmb,test_features_resnet
                 imdb_files:
                     train:
-                    - imdb/coco_captions/imdb_karpathy_train.npy
+                    - imdb_youcookII_training.npy
                     val:
-                    - imdb/coco_captions/imdb_karpathy_val.npy
+                    - imdb_youcookII_validation.npy
                     test:
-                    - imdb/coco_captions/imdb_karpathy_test.npy
+                    - imdb_youcookII_test.npy
                 features_max_len: 100
                 processors:
                   text_processor:
@@ -31,7 +33,7 @@ task_attributes:
                       vocab:
                         type: intersected
                         embedding_name: glove.6B.300d
-                        vocab_file: vocabs/vocabulary_captioning_thresh5.txt
+                        vocab_file: youcookII_vocabulary.txt
                       preprocessor:
                         type: simple_sentence
                         params: {}
@@ -41,8 +43,8 @@ task_attributes:
                       vocab:
                         type: intersected
                         embedding_name: glove.6B.300d
-                        vocab_file: vocabs/vocabulary_captioning_thresh5.txt
-                min_captions_per_img: 5
+                        vocab_file: youcookII_vocabulary.txt
+                min_captions_per_img: 1
                 return_info: false
                 # Return OCR information
                 use_ocr: false

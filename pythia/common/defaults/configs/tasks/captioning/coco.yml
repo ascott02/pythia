@@ -10,18 +10,24 @@ task_attributes:
                 fast_read: false
                 image_features:
                     train:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    # - coco/detectron_fix_100/fc6/train_val_2014
+                    - /home/ascott/data/pythia/content/data/open_images/detectron_fix_100/fc6/train
                     val:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    # - coco/detectron_fix_100/fc6/train_val_2014
+                    - /home/ascott/data/pythia/content/data/open_images/detectron_fix_100/fc6/train
                     test:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    # - coco/detectron_fix_100/fc6/train_val_2014
+                    - /home/ascott/data/pythia/content/data/open_images/detectron_fix_100/fc6/test
                 imdb_files:
                     train:
-                    - imdb/coco_captions/imdb_karpathy_train.npy
+                    # - imdb/coco_captions/imdb_karpathy_train.npy
+                    - /home/ascott/data/pythia/content/data/coco_captions/imdb_karpathy_train.npy
                     val:
-                    - imdb/coco_captions/imdb_karpathy_val.npy
+                    # - imdb/coco_captions/imdb_karpathy_val.npy
+                    - /home/ascott/data/pythia/content/data/coco_captions/imdb_karpathy_val.npy
                     test:
-                    - imdb/coco_captions/imdb_karpathy_test.npy
+                    # - imdb/coco_captions/imdb_karpathy_test.npy
+                    - /home/ascott/data/pythia/content/data/coco_captions/imdb_karpathy_test.npy
                 features_max_len: 100
                 processors:
                   text_processor:
