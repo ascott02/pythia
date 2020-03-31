@@ -344,6 +344,11 @@ class TopDownAttentionLSTM(nn.Module):
         state = registry.get("{}_lstm_state".format(image_feat.device))
         h1, c1 = state["td_hidden"]
         h2, c2 = state["lm_hidden"]
+        print("DEBUG h1, c1:", h1.size(), c1.size())
+        print("DEBUG h2, c2:", h2.size(), c2.size())
+        print("DEBUG image_feat:", image_feat.size())
+        print("DEBUG image_feat_mean:", image_feat_mean.size())
+        print("DEBUG embedding:", embedding.size())
 
         h1, c1 = self.top_down_lstm(
             torch.cat([h2, image_feat_mean, embedding], dim=1), (h1, c1)

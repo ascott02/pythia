@@ -1,9 +1,8 @@
 includes:
-- common/defaults/configs/tasks/captioning/coco.yml
-# - common/defaults/configs/tasks/captioning/youcookII.yml
+- common/defaults/configs/tasks/captioning/youcookII.yml
 model_attributes:
   butd: &butd
-    model_data_dir: ../content/data/
+    model_data_dir: ../data/
     metrics:
     - type: caption_bleu4
     losses:
@@ -34,6 +33,8 @@ model_attributes:
       params:
         bias_file: detectron/fc6/fc7_b.pkl
         weights_file: detectron/fc6/fc7_w.pkl
+    - type: default
+      params: {}
     inference:
       type: beam_search
       params:

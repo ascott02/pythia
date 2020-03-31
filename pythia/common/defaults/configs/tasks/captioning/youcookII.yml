@@ -1,5 +1,3 @@
-includes:
-- ../configs/captioning/youcookII/butd.yml
 task_attributes:
     captioning:
         datasets:
@@ -12,11 +10,14 @@ task_attributes:
                 fast_read: false
                 image_features:
                     train:
-                    - training_features_vmb,training_features_resnet
+                    # - training_features_vmb,training_features_resnet
+                    - training_features_resnet,training_features_vmb
                     val:
-                    - validation_features_vmb,validation_features_resnet
+                    # - validation_features_vmb,validation_features_resnet
+                    - validation_features_resnet,validation_features_vmb
                     test:
-                    - test_features_vmb,test_features_resnet
+                    # - test_features_vmb,test_features_resnet
+                    - test_features_resnet,test_features_vmb
                 imdb_files:
                     train:
                     - imdb_youcookII_training.npy
@@ -50,6 +51,107 @@ task_attributes:
                 use_ocr: false
                 # Return spatial information of OCR tokens if present
                 use_ocr_info: false
+
+
+# model_attributes:
+#   butd:
+#    classifier:
+#      params:
+#        dropout: 0.5
+#        fc_bias_init: 0
+#        feature_dim: 2048
+#        hidden_dim: 1024
+#      type: language_decoder
+#    embedding_dim: 300
+#    image_feature_dim: 2048
+#    image_feature_embeddings:
+#    - modal_combine:
+#         params:
+#           attention_dim: 1024
+#           dropout: 0.5
+#           hidden_dim: 1024
+#         type: top_down_attention_lstm
+#       normalization: softmax
+#       transform:
+#         params:
+#           out_dim: 1
+#         type: linear
+#     image_feature_encodings:
+#     - type: finetune_faster_rcnn_fpn_fc7
+#       params:
+#         bias_file: detectron/fc6/fc7_b.pkl
+#         model_data_dir: content/data
+#         weights_file: detectron/fc6/fc7_w.pkl
+#     - type: default
+#       params: {}
+#     inference:
+#       params:
+#         beam_length: 5
+#       type: beam_search
+#     losses:
+#     - type: caption_cross_entropy
+#     metrics:
+#     - type: caption_bleu4
+#     model: butd
+#     model_data_dir: content/data/
+# optimizer_attributes:
+#   params:
+#     eps: 1e-08
+#     lr: 0.01
+#     weight_decay: 0
+#   type: Adamax
+
+tasks: captioning
 training_parameters:
-    monitored_metric: coco_caption_bleu4
-    metric_minimize: false
+  batch_size: 1
+  clip_gradients: True
+  clip_norm_mode: all
+  data_parallel: False
+  device: cuda
+  distributed: False
+  evalai_inference: True
+  experiment_name: run
+  load_pretrained: False
+  local_rank: None
+  log_dir: ./logs
+  log_interval: 100
+  logger_level: info
+  lr_ratio: 0.1
+  lr_scheduler: True
+  lr_steps:
+  - 15000
+  - 25000
+  - 35000
+  - 45000
+  max_epochs: None
+  max_grad_l2_norm: 0.25
+  max_iterations: 50000
+  # metric_minimize: False
+  # monitored_metric: caption_bleu4
+  num_workers: 7
+  patience: 4000
+  pin_memory: False
+  # pretrained_mapping:
+
+  resume: False
+  # resume_file: ./save/captioning_coco_butd_6002/butd_final.pth
+  run_type: inference
+  save_dir: ./save
+  seed: 6002
+  should_early_stop: False
+  should_not_log: False
+  snapshot_interval: 1000
+  task_size_proportional_sampling: True
+  trainer: base_trainer
+  use_warmup: True
+  verbose_dump: False
+  warmup_factor: 0.2
+  warmup_iterations: 1000
+  monitored_metric: youcookII_caption_bleu4
+  metric_minimize: false
+  pretrained_mapping:
+    text_embeddings: text_embeddings
+    image_feature_encoders: image_feature_encoders
+    image_feature_embeddings_list: image_feature_embeddings_list
+    image_text_multi_modal_combine_layer: image_text_multi_modal_combine_layer
+
