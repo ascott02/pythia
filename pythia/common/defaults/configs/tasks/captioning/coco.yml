@@ -5,29 +5,33 @@ task_attributes:
         dataset_size_proportional_sampling: true
         dataset_attributes:
             coco:
-                data_root_dir: /media/ascott/ClonedImages/datasets/coco_pythia
+                # data_root_dir: /media/ascott/ClonedImages/datasets/coco_pythia
+                data_root_dir: content/data
                 image_depth_first: false
                 fast_read: false
                 image_features:
                     train:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    - ClonedImages/datasets/coco_pythia/coco/detectron_fix_100/fc6/train_val_2014,ClonedImages/datasets/coco_pythia/coco/resnet152/train_val_2014
+                    # - coco/detectron_fix_100/fc6/train_val_2014
                     # - /home/ascott/data/pythia/content/data/open_images/detectron_fix_100/fc6/train
                     val:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    - ClonedImages/datasets/coco_pythia/coco/detectron_fix_100/fc6/train_val_2014,ClonedImages/datasets/coco_pythia/coco/resnet152/train_val_2014
+                    # - coco/detectron_fix_100/fc6/train_val_2014
                     # - /home/ascott/data/pythia/content/data/open_images/detectron_fix_100/fc6/train
                     test:
-                    - coco/detectron_fix_100/fc6/train_val_2014
+                    - ClonedImages/datasets/coco_pythia/coco/detectron_fix_100/fc6/test2015,ClonedImages/datasets/coco_pythia/coco/resnet152/test2015
+                    # - coco/detectron_fix_100/fc6/train_val_2014
                     # - /home/ascott/data/pythia/content/data/open_images/detectron_fix_100/fc6/test
                 imdb_files:
                     train:
                     # - imdb/coco_captions/imdb_karpathy_train.npy
-                    - /home/ascott/data/pythia/content/data/coco_captions/imdb_karpathy_train.npy
+                    - coco_captions/imdb_karpathy_train.npy
                     val:
                     # - imdb/coco_captions/imdb_karpathy_val.npy
-                    - /home/ascott/data/pythia/content/data/coco_captions/imdb_karpathy_val.npy
+                    - coco_captions/imdb_karpathy_val.npy
                     test:
                     # - imdb/coco_captions/imdb_karpathy_test.npy
-                    - /home/ascott/data/pythia/content/data/coco_captions/imdb_karpathy_test.npy
+                    - coco_captions/imdb_karpathy_test.npy
                 features_max_len: 100
                 processors:
                   text_processor:
@@ -37,8 +41,7 @@ task_attributes:
                       vocab:
                         type: intersected
                         embedding_name: glove.6B.300d
-                        # vocab_file: vocabs/vocabulary_captioning_thresh5.txt
-                        vocab_file: /home/ascott/data/pythia/content/data/vocabs/vocabulary_captioning_thresh5.txt
+                        vocab_file: vocabs/vocabulary_captioning_thresh5.txt
                       preprocessor:
                         type: simple_sentence
                         params: {}
@@ -48,8 +51,7 @@ task_attributes:
                       vocab:
                         type: intersected
                         embedding_name: glove.6B.300d
-                        # vocab_file: vocabs/vocabulary_captioning_thresh5.txt
-                        vocab_file: /home/ascott/data/pythia/content/data/vocabs/vocabulary_captioning_thresh5.txt
+                        vocab_file: vocabs/vocabulary_captioning_thresh5.txt
                 min_captions_per_img: 5
                 return_info: false
                 # Return OCR information
