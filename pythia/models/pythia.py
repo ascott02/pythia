@@ -67,7 +67,6 @@ class Pythia(BaseModel):
         feat_encoders_list_config = self.config[attr + "_feature_encodings"]
         feature_dim = self.config[attr + "_feature_dim"]
         setattr(self, attr + "_feature_dim", feature_dim)
-        print("DEBUG feat_encoders_list_config", len(feat_encoders_list_config))
 
         for feat_encoder in feat_encoders_list_config:
             encoder_type = feat_encoder["type"]
@@ -86,7 +85,6 @@ class Pythia(BaseModel):
         num_feature_feat = len(
             getattr(self.config, "{}_feature_encodings".format(attr))
         )
-        print("DEBUG num_feature_feat", num_feature_feat)
 
         self.feature_embeddings_out_dim = 0
 
@@ -228,7 +226,7 @@ class Pythia(BaseModel):
             features.append(feature)
 
         feature_encoders = getattr(self, attr + "_feature_encoders")
-        print("DEBUG feature_encoders:", len(feature_encoders))
+        feature_encoders = [feature_encoders[0]]
         # Each feature should have a separate image feature encoders
         assert len(features) == len(feature_encoders), (
             "Number of feature encoders, {} are not equal "
@@ -242,8 +240,6 @@ class Pythia(BaseModel):
             feature_info = getattr(sample_list, "{}_info_{:d}".format(attr, i), {})
             # For Pythia, we need max_features to mask attention
             feature_dim = getattr(feature_info, "max_features", None)
-            print("DEBUG feature_info", feature_info)
-            print("DEBUG feature_dim", feature_dim)
             if feature_dim is not None:
                 feature_dim = feature_dim[:batch_size_t]
 
@@ -259,7 +255,7 @@ class Pythia(BaseModel):
             # Get all of the feature embeddings
             list_attr = attr + "_feature_embeddings_list"
             feature_embedding_models = getattr(self, list_attr)[i]
-            print("DEBUG feature_embedding_models:", len(feature_embedding_models))
+
             # Forward through these embeddings one by one
             for feature_embedding_model in feature_embedding_models:
                 inp = (encoded_feature, text_embedding_total, feature_dim, extra)

@@ -12,18 +12,27 @@ task_attributes:
                     train:
                     # - training_features_vmb,training_features_resnet
                     # - training_features_resnet
+                    # - training_features_resnet,training_features_resnet
                     - training_features_vmb
+                    # - training_features_vmb,training_features_vmb
                     # - training_features_resnet,training_features_vmb
                     val:
                     # - validation_features_vmb,validation_features_resnet
                     # - validation_features_resnet
+                    # - validation_features_resnet,validation_features_resnet
                     - validation_features_vmb
+                    # - validation_features_vmb,validation_features_vmb
                     # - validation_features_resnet,validation_features_vmb
                     test:
                     # - test_features_vmb,test_features_resnet
-                    # - test_features_resnet,test_features_vmb
                     # - test_features_resnet
-                    - test_features_vmb
+                    # - validation_features_resnet,validation_features_resnet
+                    # - test_features_resnet,test_features_resnet
+                    # - test_features_vmb
+                    - validation_features_vmb
+                    # - validation_features_vmb,validation_features_vmb
+                    # - test_features_vmb,test_features_vmb
+                    # - test_features_resnet,test_features_vmb
                 imdb_files:
                     train:
                     - imdb_youcookII_training.npy

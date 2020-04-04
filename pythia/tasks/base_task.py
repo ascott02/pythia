@@ -97,7 +97,6 @@ class BaseTask(Dataset):
                     continue
                 builder_instance = builder_class()
 
-                print("DEBUG dataset_attributes:", self.opts["dataset_attributes"])
                 if dataset in self.opts["dataset_attributes"]:
                     attributes = self.opts["dataset_attributes"][dataset]
                 else:
