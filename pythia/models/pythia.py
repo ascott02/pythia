@@ -226,7 +226,7 @@ class Pythia(BaseModel):
             features.append(feature)
 
         feature_encoders = getattr(self, attr + "_feature_encoders")
-        feature_encoders = [feature_encoders[0]]
+        # feature_encoders = [feature_encoders[0]]
         # Each feature should have a separate image feature encoders
         assert len(features) == len(feature_encoders), (
             "Number of feature encoders, {} are not equal "
