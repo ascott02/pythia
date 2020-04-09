@@ -220,6 +220,7 @@ class PythiaDemo:
                                                   'fc6', 0.2)
       return feat_list[0]
 
+demo = PythiaDemo()
 
 def init_widgets(url):
   image_text = widgets.Text(
@@ -273,7 +274,7 @@ URL: <input type="input" name="image_url" /><br/><br/>
 
     def POST(self, *args):
         x = web.input()
-        demo = PythiaDemo()
+        # demo = PythiaDemo()
         image_path = demo.get_actual_image(str(x['image_url']))
 
         tokens = demo.predict(str(x['image_url']))
@@ -311,7 +312,7 @@ class api:
         if not str(x['token']) in config.tokens:
             return "Not in tokens."
     
-        demo = PythiaDemo()        
+        # demo = PythiaDemo()        
         image_path = demo.get_actual_image(str(x['image_url']))
 
         tokens = demo.predict(str(x['image_url']))
