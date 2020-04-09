@@ -225,7 +225,8 @@ class CaptionBleu4Metric(BaseMetric):
 
     def __init__(self):
         super().__init__("caption_bleu4")
-        self.caption_processor = registry.get("coco_caption_processor")
+        # TODO: fix this so it can set coco_caption_processor or youcookII_caption_processor
+        self.caption_processor = registry.get("youcookII_caption_processor")
 
     def calculate(self, sample_list, model_output, *args, **kwargs):
         """Calculate accuracy and return it back.

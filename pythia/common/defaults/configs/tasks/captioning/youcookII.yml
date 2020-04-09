@@ -7,9 +7,9 @@ task_attributes:
             youcookII:
                 # TODO: make paths consistent and reference relatively
                 # perl
-                data_root_dir: /home/ats/code/pythia/content/youcookII_train_val
+                # data_root_dir: /home/ats/code/pythia/content/youcookII_train_val
                 # vger
-                # data_root_dir: /home/ascott/data/pythia/youcookII_features
+                data_root_dir: /home/ascott/data/pythia/youcookII_features
                 image_depth_first: false
                 fast_read: false
                 image_features:
@@ -171,9 +171,9 @@ training_parameters:
 #   warmup_iterations: 1000
 #   monitored_metric: youcookII_caption_bleu4
 #   metric_minimize: false
-#   pretrained_mapping:
-#     text_embeddings: text_embeddings
-#     image_feature_encoders: image_feature_encoders
-#     image_feature_embeddings_list: image_feature_embeddings_list
-#     image_text_multi_modal_combine_layer: image_text_multi_modal_combine_layer
+pretrained_mapping:
+  text_embeddings: text_embeddings
+  image_feature_encoders: image_feature_encoders
+  image_feature_embeddings_list: image_feature_embeddings_list
+  image_text_multi_modal_combine_layer: image_text_multi_modal_combine_layer
 
