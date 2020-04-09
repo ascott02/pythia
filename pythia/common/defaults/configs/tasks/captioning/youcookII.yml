@@ -53,7 +53,8 @@ task_attributes:
                       vocab:
                         type: intersected
                         embedding_name: glove.6B.300d
-                        vocab_file: youcookII_vocabulary.txt
+                        # vocab_file: youcookII_vocabulary.txt
+                        vocab_file: ../content/data/vocabs/vocabulary_captioning_thresh5.txt
                       preprocessor:
                         type: simple_sentence
                         params: {}
@@ -63,7 +64,8 @@ task_attributes:
                       vocab:
                         type: intersected
                         embedding_name: glove.6B.300d
-                        vocab_file: youcookII_vocabulary.txt
+                        # vocab_file: youcookII_vocabulary.txt
+                        vocab_file: ../content/data/vocabs/vocabulary_captioning_thresh5.txt
                 min_captions_per_img: 1
                 return_info: false
                 # Return OCR information
@@ -72,9 +74,8 @@ task_attributes:
                 use_ocr_info: false
 
 training_parameters:
-    monitored_metric: coco_caption_bleu4
+    monitored_metric: caption_bleu4
     metric_minimize: false
-
 # model_attributes:
 #   butd:
 #    classifier:
