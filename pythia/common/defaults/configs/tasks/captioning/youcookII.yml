@@ -155,7 +155,6 @@ training_parameters:
 #   patience: 4000
 #   # pin_memory: False
 #   # pretrained_mapping:
-#
 #   resume: False
 #   # resume_file: ./save/captioning_coco_butd_6002/butd_final.pth
 #   # run_type: inference
