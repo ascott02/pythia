@@ -7,9 +7,9 @@ task_attributes:
             youcookII:
                 # TODO: make paths consistent and reference relatively
                 # perl
-                # data_root_dir: /home/ats/code/pythia/content/youcookII_train_val
+                data_root_dir: /home/ats/code/pythia/content/youcookII_train_val
                 # vger
-                data_root_dir: /home/ascott/data/pythia/youcookII_features
+                # data_root_dir: /home/ascott/data/pythia/youcookII_features
                 image_depth_first: false
                 fast_read: false
                 image_features:
