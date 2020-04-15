@@ -7,7 +7,8 @@ task_attributes:
             youcookII:
                 # TODO: make paths consistent and reference relatively
                 # perl
-                data_root_dir: /home/ats/code/pythia/content/youcookII_train_val
+                # data_root_dir: /home/ats/code/pythia/content/youcookII_train_val
+                data_root_dir: /home/ats/code/pythia/content/youcookII_train_val_test_theshold_0.17
                 # vger
                 # data_root_dir: /home/ascott/data/pythia/youcookII_features
                 image_depth_first: false
@@ -33,7 +34,7 @@ task_attributes:
                     # - validation_features_resnet,validation_features_resnet
                     # - test_features_resnet,test_features_resnet
                     # - test_features_vmb
-                    - validation_features_vmb
+                    - test_features_vmb
                     # - validation_features_vmb,validation_features_vmb
                     # - test_features_vmb,test_features_vmb
                     # - test_features_resnet,test_features_vmb
