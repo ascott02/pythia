@@ -44,7 +44,7 @@ optimizer_attributes:
   type: Adamax
   params:
     eps: 1.0e-08
-    lr: 0.01
+    lr: 0.002
     weight_decay: 0
 training_parameters:
   clip_norm_mode: all
