@@ -8,6 +8,7 @@ urls = (
     '/', 'index',
     '/api', 'api',
     '/login', 'login',
+    '/meme', 'meme',
 )
 
 import yaml
@@ -41,6 +42,16 @@ from pythia.tasks.processors import VocabProcessor, CaptionProcessor
 from pythia.models.butd import BUTD
 from pythia.common.registry import registry
 from pythia.common.sample import Sample, SampleList
+
+# for meme
+import PIL
+from PIL import ImageFont
+from PIL import Image
+from PIL import ImageDraw
+# font_path="/usr/share/fonts/truetype/msttcorefonts/Impact.ttf"
+font_path="Impact.ttf"
+from io import BytesIO 
+
 
 class PythiaDemo:
   TARGET_IMAGE_SIZE = [448, 448]
@@ -251,6 +262,73 @@ def on_button_click(b, image_text):
 
   display(HTML(answer))
 
+def make_meme(filename, topString, bottomString):
+    print("DEBUG filename:", filename)
+    print("DEBUG topString:", topString)
+    print("DEBUG bottomString:", bottomString)
+
+    img = Image.open(filename)
+    imageSize = img.size
+
+    # find biggest font size that works
+    fontSize = int(imageSize[1]/5)
+    font = ImageFont.truetype(font_path, fontSize)
+    topTextSize = font.getsize(topString)
+    bottomTextSize = font.getsize(bottomString)
+    while topTextSize[0] > imageSize[0]-20 or bottomTextSize[0] > imageSize[0]-20:
+        fontSize = fontSize - 1
+        font = ImageFont.truetype(font_path, fontSize)
+        topTextSize = font.getsize(topString)
+        bottomTextSize = font.getsize(bottomString)
+
+    # find top centered position for top text
+    topTextPositionX = (imageSize[0]/2) - (topTextSize[0]/2)
+    topTextPositionY = 0
+    topTextPosition = (topTextPositionX, topTextPositionY)
+
+    # find bottom centered position for bottom text
+    bottomTextPositionX = (imageSize[0]/2) - (bottomTextSize[0]/2)
+    bottomTextPositionY = imageSize[1] - bottomTextSize[1]
+    bottomTextPosition = (bottomTextPositionX, bottomTextPositionY)
+
+    draw = ImageDraw.Draw(img)
+
+    # draw outlines
+    # there may be a better way
+    outlineRange = int(fontSize/15)
+    for x in range(-outlineRange, outlineRange+1):
+        for y in range(-outlineRange, outlineRange+1):
+            draw.text((topTextPosition[0]+x, topTextPosition[1]+y), topString, (0,0,0), font=font)
+            draw.text((bottomTextPosition[0]+x, bottomTextPosition[1]+y), bottomString, (0,0,0), font=font)
+
+    draw.text(topTextPosition, topString, (255,255,255), font=font)
+    draw.text(bottomTextPosition, bottomString, (255,255,255), font=font)
+
+    # img.save("temp.png")
+    return img
+
+def get_upper(somedata):
+	'''
+	Handle Python 2/3 differences in argv encoding
+	'''
+	result = ''
+	try:
+		result = somedata.decode("utf-8").upper()
+	except:
+		result = somedata.upper()
+	return result
+
+def get_lower(somedata):
+	'''
+	Handle Python 2/3 differences in argv encoding
+	'''
+	result = ''
+	try:
+		result = somedata.decode("utf-8").lower()
+	except:
+		result = somedata.lower()		
+
+	return result
 
 # image_text = init_widgets(
 #     "http://images.cocodataset.org/train2017/000000505539.jpg"
@@ -294,6 +372,58 @@ URL: <input type="input" name="image_url" /><br/><br/>
             return page
         else:
             raise web.seeother('/login')
+
+class meme:
+
+    def GET(self, *args):
+
+        if web.ctx.env.get('HTTP_AUTHORIZATION') is not None:
+            return """<html><head></head><body>
+This form takes an image URL and returns a Pythia captioned meme.<br/><br/>
+<form method="POST" action="">
+URL: <input type="input" name="image_url" /><br/><br/>
+<input type="submit" />
+</form>
+</body></html>"""
+        else:
+            raise web.seeother('/login')
+
+    def POST(self, *args):
+        x=web.input()
+        image_path = demo.get_actual_image(str(x['image_url']))
+
+        tokens = demo.predict(str(x['image_url']))
+        answer = demo.caption_processor(tokens.tolist()[0])["caption"]
+        answer_list = answer.split(" ")
+
+        topString = ' '.join(answer_list[:len(answer_list)//2])
+        bottomString = ' '.join(answer_list[len(answer_list)//2:])
+
+        image = make_meme(image_path, topString, bottomString)
+
+        output = BytesIO()
+        # im = Image.open("test.png") # Your image here!
+        image.save(output, format='JPEG')
+        # output.seek(0)
+        # output_s = output.read()
+        output_s = output.getvalue()
+        b64 = base64.b64encode(output_s)
+
+        img_tag = '<img src="data:image/jpeg;base64,{0}">'.format(b64.decode())
+
+        page = """<html><head></head><body>
+This form takes an image URL and returns a Pythia captioned meme.<br/><br/>
+<form method="POST" action="">
+URL: <input type="input" name="image_url" /><br/><br/>
+<input type="submit" />
+</form>""" + img_tag + """<br/>Caption: """ + answer + """<br/>
+</body></html>"""
+
+        if web.ctx.env.get('HTTP_AUTHORIZATION') is not None:
+            return page
+        else:
+            raise web.seeother('/login')
+
 
 class api:
 
