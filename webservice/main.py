@@ -52,19 +52,33 @@ from PIL import ImageDraw
 font_path="Impact.ttf"
 from io import BytesIO 
 
+# model_yaml = "content/model_data/butd.yaml"
+# model_pth = 'content/model_data/butd.pth'
+#
+# model_pth = "../save/ycII_ft_bs_64_lr_002.copy/captioning_youcookII_butd/butd_final.pth"
+# model_yaml = "../save/ycII_ft_bs_64_lr_002.copy/captioning_youcookII_butd/config.yaml"
+model_pth = "../save/ycII_ft_bs_64_lr_005.copy/captioning_youcookII_butd/butd_final.pth"
+model_yaml = "../save/ycII_ft_bs_64_lr_005.copy/captioning_youcookII_butd/config.yaml"
+# model_pth = "../save/ycII_training_bs_64_lr_01_no_preload.copy/captioning_youcookII_butd/butd_final.pth"
+# model_yaml = "../save/ycII_training_bs_64_lr_01_no_preload.copy/captioning_youcookII_butd/config.yaml"
+
+# best.ckpt  
+# butd_final.pth  
+# config.yaml
+
+
 
 class PythiaDemo:
   TARGET_IMAGE_SIZE = [448, 448]
   CHANNEL_MEAN = [0.485, 0.456, 0.406]
   CHANNEL_STD = [0.229, 0.224, 0.225]
-
   def __init__(self):
     self._init_processors()
     self.pythia_model = self._build_pythia_model()
     self.detection_model = self._build_detection_model()
 
   def _init_processors(self):
-    with open("content/model_data/butd.yaml") as f:
+    with open(model_yaml) as f:
       config = yaml.load(f)
 
     config = ConfigNode(config)
@@ -74,20 +88,28 @@ class PythiaDemo:
 
     self.config = config
 
-    captioning_config = config.task_attributes.captioning.dataset_attributes.coco
+    # captioning_config = config.task_attributes.captioning.dataset_attributes.coco
+    captioning_config = config.task_attributes.captioning.dataset_attributes.youcookII
     text_processor_config = captioning_config.processors.text_processor
     caption_processor_config = captioning_config.processors.caption_processor
+    # print("DEBUG captioning_config:", captioning_config)
+    # print("DEBUG text_processor_config:", text_processor_config)
+    # print("DEBUG caption_processor_config:", caption_processor_config)
 
     text_processor_config.params.vocab.vocab_file = "content/model_data/vocabulary_captioning_thresh5.txt"
     caption_processor_config.params.vocab.vocab_file = "content/model_data/vocabulary_captioning_thresh5.txt"
     self.text_processor = VocabProcessor(text_processor_config.params)
     self.caption_processor = CaptionProcessor(caption_processor_config.params)
+    # print("DEBUG text_processor:", self.text_processor)
+    # print("DEBUG caption_processor:", self.caption_processor)
 
-    registry.register("coco_text_processor", self.text_processor)
-    registry.register("coco_caption_processor", self.caption_processor)
+    # registry.register("coco_text_processor", self.text_processor)
+    # registry.register("coco_caption_processor", self.caption_processor)
+    registry.register("youcookII_text_processor", self.text_processor)
+    registry.register("youcookII_caption_processor", self.caption_processor)
 
   def _build_pythia_model(self):
-    state_dict = torch.load('content/model_data/butd.pth')
+    state_dict = torch.load(model_pth)
     model_config = self.config.model_attributes.butd
     model_config.model_data_dir = "content/"
     model = BUTD(model_config)
@@ -99,6 +121,10 @@ class PythiaDemo:
       state_dict = self._multi_gpu_state_to_single(state_dict)
 
     model.load_state_dict(state_dict)
+    # print("DEBUG Model's state_dict:")
+    # for param_tensor in model.state_dict():
+    #     print("DEBUG:", param_tensor, "\t", model.state_dict()[param_tensor].size())
+
     model.to("cuda")
     model.eval()
 
@@ -118,13 +144,17 @@ class PythiaDemo:
       detectron_features = self.get_detectron_features(url)
 
       sample = Sample()
-      sample.dataset_name = "coco"
+      # sample.dataset_name = "coco"
+      sample.dataset_name = "youcookII"
       sample.dataset_type = "test"
       sample.image_feature_0 = detectron_features
       sample.answers = torch.zeros((5, 10), dtype=torch.long)
+      # print("DEBUG self.pythia_model:", self.pythia_model)
 
       sample_list = SampleList([sample])
+      # print("DEBUG sample_list:", sample_list)
       sample_list = sample_list.to("cuda")
+      # print("DEBUG self.pythia_model(sample_list):", self.pythia_model(sample_list))
 
       tokens = self.pythia_model(sample_list)["captions"]
 
