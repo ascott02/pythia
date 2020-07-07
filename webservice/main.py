@@ -151,7 +151,8 @@ class PythiaDemo:
 
   def get_actual_image(self, image_path):
       if image_path.startswith('http'):
-          path = requests.get(image_path, stream=True).raw
+          # path = requests.get(image_path, stream=True).raw
+          path = requests.get(image_path, stream=True)
       else:
           path = image_path
 
@@ -160,7 +161,14 @@ class PythiaDemo:
   def _image_transform(self, image_path):
       path = self.get_actual_image(image_path)
 
-      img = Image.open(path)
+      try:
+          print("DEBUG in the try")
+          img = Image.open(path)
+      except:
+          print("DEBUG in the exception")
+          stream = BytesIO(path.content)
+          img = Image.open(stream)
+
       im = np.array(img).astype(np.float32)
       im = im[:, :, ::-1]
       im -= np.array([102.9801, 115.9465, 122.7717])
