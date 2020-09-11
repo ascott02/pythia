@@ -8,6 +8,7 @@ urls = (
     '/', 'index',
     '/api', 'api',
     '/login', 'login',
+    '/upload', 'upload',
     '/meme', 'meme',
 )
 
@@ -52,13 +53,13 @@ from PIL import ImageDraw
 font_path="Impact.ttf"
 from io import BytesIO 
 
-# model_yaml = "content/model_data/butd.yaml"
-# model_pth = 'content/model_data/butd.pth'
+model_yaml = "content/model_data/butd.yaml"
+model_pth = 'content/model_data/butd.pth'
 #
 # model_pth = "../save/ycII_ft_bs_64_lr_002.copy/captioning_youcookII_butd/butd_final.pth"
 # model_yaml = "../save/ycII_ft_bs_64_lr_002.copy/captioning_youcookII_butd/config.yaml"
-model_pth = "../save/ycII_ft_bs_64_lr_005.copy/captioning_youcookII_butd/butd_final.pth"
-model_yaml = "../save/ycII_ft_bs_64_lr_005.copy/captioning_youcookII_butd/config.yaml"
+# model_pth = "../save/ycII_ft_bs_64_lr_005.copy/captioning_youcookII_butd/butd_final.pth"
+# model_yaml = "../save/ycII_ft_bs_64_lr_005.copy/captioning_youcookII_butd/config.yaml"
 # model_pth = "../save/ycII_training_bs_64_lr_01_no_preload.copy/captioning_youcookII_butd/butd_final.pth"
 # model_yaml = "../save/ycII_training_bs_64_lr_01_no_preload.copy/captioning_youcookII_butd/config.yaml"
 
@@ -88,8 +89,8 @@ class PythiaDemo:
 
     self.config = config
 
-    # captioning_config = config.task_attributes.captioning.dataset_attributes.coco
-    captioning_config = config.task_attributes.captioning.dataset_attributes.youcookII
+    captioning_config = config.task_attributes.captioning.dataset_attributes.coco
+    # captioning_config = config.task_attributes.captioning.dataset_attributes.youcookII
     text_processor_config = captioning_config.processors.text_processor
     caption_processor_config = captioning_config.processors.caption_processor
     # print("DEBUG captioning_config:", captioning_config)
@@ -103,10 +104,10 @@ class PythiaDemo:
     # print("DEBUG text_processor:", self.text_processor)
     # print("DEBUG caption_processor:", self.caption_processor)
 
-    # registry.register("coco_text_processor", self.text_processor)
-    # registry.register("coco_caption_processor", self.caption_processor)
-    registry.register("youcookII_text_processor", self.text_processor)
-    registry.register("youcookII_caption_processor", self.caption_processor)
+    registry.register("coco_text_processor", self.text_processor)
+    registry.register("coco_caption_processor", self.caption_processor)
+    # registry.register("youcookII_text_processor", self.text_processor)
+    # registry.register("youcookII_caption_processor", self.caption_processor)
 
   def _build_pythia_model(self):
     state_dict = torch.load(model_pth)
@@ -180,9 +181,12 @@ class PythiaDemo:
       return model
 
   def get_actual_image(self, image_path):
-      if image_path.startswith('http'):
-          # path = requests.get(image_path, stream=True).raw
-          path = requests.get(image_path, stream=True)
+      if type(image_path) == str():
+          if image_path.startswith('http'):
+              # path = requests.get(image_path, stream=True).raw
+              path = requests.get(image_path, stream=True)
+          else:
+              path = image_path
       else:
           path = image_path
 
@@ -196,7 +200,8 @@ class PythiaDemo:
           img = Image.open(path)
       except:
           print("DEBUG in the exception")
-          stream = BytesIO(path.content)
+          # stream = BytesIO(path.content)
+          stream = BytesIO(path)
           img = Image.open(stream)
 
       im = np.array(img).astype(np.float32)
@@ -487,6 +492,32 @@ class api:
         answer = demo.caption_processor(tokens.tolist()[0])["caption"]
     
         return answer
+
+class upload:
+
+    def POST(self, *args):
+        x = web.input(img_file={})
+        web.debug(x['token'])                  # This is the api token 
+        web.debug(x['img_file'].filename)      # This is the filename
+        # web.debug(x['img_file'].value)       # This is the file contents
+        # web.debug(x['img_file'].file.read()) # Or use a file(-like) object
+        # data = web.data()
+
+        if not x['img_file'].filename:
+            return "No file."
+
+        if not x['token']:
+            return "No token."
+
+        if not x['token'].decode('utf-8') in config.tokens:
+            return "Not in tokens."
+    
+        # caption = _get_score(x['img_file'].value, str(x['caption']))
+        tokens = demo.predict(x['img_file'].value)
+        caption = demo.caption_processor(tokens.tolist()[0])["caption"]
+
+        return caption
+
 
 
 class login:
