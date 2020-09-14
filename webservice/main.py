@@ -181,28 +181,34 @@ class PythiaDemo:
       return model
 
   def get_actual_image(self, image_path):
-      if type(image_path) == str():
-          if image_path.startswith('http'):
-              # path = requests.get(image_path, stream=True).raw
-              path = requests.get(image_path, stream=True)
-          else:
-              path = image_path
+      if type(image_path) == type(str()) and image_path.startswith('http'):
+          # path = requests.get(image_path, stream=True).raw
+          path = requests.get(image_path, stream=True)
+          try:
+              img = Image.open(path).convert('RGB') 
+          except:
+              stream = BytesIO(path.content) 
+              img = Image.open(stream).convert('RGB')
       else:
-          path = image_path
+          stream = BytesIO(image_path) 
+          img = Image.open(stream).convert('RGB')
 
-      return path
+      return img
 
   def _image_transform(self, image_path):
-      path = self.get_actual_image(image_path)
+      # path = self.get_actual_image(image_path)
+      img = self.get_actual_image(image_path)
+      print("DEBUG img: ", img)
 
-      try:
-          print("DEBUG in the try")
-          img = Image.open(path)
-      except:
-          print("DEBUG in the exception")
-          # stream = BytesIO(path.content)
-          stream = BytesIO(path)
-          img = Image.open(stream)
+      # try:
+      #     print("DEBUG in the try")
+      #     img = Image.open(path)
+      # except:
+      #     print("DEBUG in the exception")
+      #     # stream = BytesIO(path.content)
+      #   
+      #     stream = BytesIO(path)
+      #     img = Image.open(stream)
 
       im = np.array(img).astype(np.float32)
       im = im[:, :, ::-1]
